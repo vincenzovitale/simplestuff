@@ -33,18 +33,15 @@ import com.google.code.simplestuff.annotation.BusinessObject;
 
 /**
  * 
- * Utility class for Java bean enhancement.
+ * Simple utility class for Java bean enhancement.
  * 
  * @author Vincenzo Vitale (vincenzo.vitale)
  * @since Jul 08, 2008
  * 
- * @deprecated To be fixed after the code review... If you are seeing this
- *             please use another version.
  */
 // TODO: Class is too big, should be broken up into functional parts. For
-// example,
-// getting BusinessObjectDescriptor and actually processing it (during equals,
-// hashCode etc.) doesn't need to be in the same class.
+// example, getting BusinessObjectDescriptor and actually processing it (during
+// equals, hashCode etc.) doesn't need to be in the same class.
 public class SimpleBean {
 
     /** Logger for this class */
@@ -99,10 +96,14 @@ public class SimpleBean {
         }
 
         // Then we continue with the annotated fields, first checking
-        // if the two objects contain the same annotated fields.
-        if (!compareAnnotatedFields(firstBusinessObjectInfo
+        // if the two objects contain the same annotated fields. A paranoid
+        // comparison (both sides) is done only if the two objects are not on
+        // the same class in order to handle tricky cases.
+        final boolean performParanoidComparison =
+                !firstBean.getClass().equals(secondBean.getClass());
+        if (!compareAnnotatedFieldsByName(firstBusinessObjectInfo
                 .getAnnotatedFields(), secondBusinessObjectInfo
-                .getAnnotatedFields())) {
+                .getAnnotatedFields(), performParanoidComparison)) {
             // If the comparison fails than we can already return false.
             return false;
         }
@@ -211,31 +212,66 @@ public class SimpleBean {
     }
 
     /**
-     * Returns true if the two field collections are equals, basing the
-     * comparison only on the name and not on the class.
+     * Returns true if the two {@link Field} object collections are equals,
+     * basing the comparison only on the name and not on the class of the
+     * fields.
      * 
-     * @param annotatedFields
-     * @param annotatedFields2
-     * @return
+     * @param firstAnnotatedFields The first collection to compare
+     * @param secondAnnotatedFields The second collection to compare
+     * @param paranoidComparison If a double comparison has to be done
+     *        (comparing first and second and then second and first.
+     * @return If the two collection contain the same fields by name.
      */
-    private static boolean compareAnnotatedFields(
-            Collection<Field> annotatedFields,
-            Collection<Field> annotatedFields2) {
-        // TODO To complete.
+    private static boolean compareAnnotatedFieldsByName(
+            Collection<Field> firstAnnotatedFields,
+            Collection<Field> secondAnnotatedFields, boolean paranoidComparison) {
 
+        // TODO: Probably this code can be improved in performances. BTW
+        // consider that it could be possible that parent and child have the
+        // same private property and this will result in two identical (from the
+        // business point of view) fields in the collection. This also means we
+        // cannot speed up performances first comparing the collections sizes.
+        for (Field firstField : firstAnnotatedFields) {
+            boolean fieldFound = false;
+            for (Field secondField : secondAnnotatedFields) {
+                if (firstField.getName().equals(secondField.getName())) {
+                    fieldFound = true;
+                    // Field found we can exit the second inner cycle.
+                    break;
+                }
+            }
+
+            // If we are the current field of the first collection wasn't found
+            // in the second one... we can directly return false
+            if (!fieldFound) {
+                return false;
+            }
+        }
+
+        // If the paranoidComparison is true, we repeat the same operation
+        // comparing the second collection with the first one. The
+        // paranoicComparison prevent tricky cases in which for example for
+        // the first bean parent a child have the same annotated field (same
+        // name) and for the second one we have the same number of annotated
+        // fields of the first one. In this case neither comparing size of
+        // the second collection and successful matches would help.
+        if (paranoidComparison) {
+            compareAnnotatedFieldsByName(secondAnnotatedFields,
+                    firstAnnotatedFields, false);
+        }
+
+        // If we are here all the fields of the first collection were
+        // successfully found in the second collection and vice versa.
         return true;
     }
 
     /**
-     * 
      * Returns the hashCode basing considering only the {@link BusinessField}
      * annotated fields.
      * 
      * @param bean The bean.
      * @return The hashCode result.
      * @throws IllegalArgumentException If the bean is not a Business Object.
-     * @deprecated To be fixed after the code review... If you are seeing this
-     *             please use another version.
      */
     public static int hashCode(Object bean) {
 
@@ -305,7 +341,6 @@ public class SimpleBean {
     }
 
     /**
-     * 
      * Returns the description of a bean considering only the
      * {@link BusinessField} annotated fields.
      * 
