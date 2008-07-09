@@ -1,0 +1,86 @@
+#summary Future Possible Improvements
+
+= Introduction =
+
+Here a list of future improvements to be implemented.
+
+
+= Improvements =
+
+
+1 MATCHING SUBCLASSES:
+
+		I was thinking about how to compare the class in a more flexible manner on my way here, and come up with the following suggestion:
+		
+		Instead of 
+		
+		  boolean includeClass...son default true
+		
+		how about
+		
+		  Class[] comparableClasses default null
+		  boolean matchSubclasses default false
+		
+		This way, the user can *specify* at the class level 
+		
+		a) whether class information should be included in the comparison (and hash code calculation, we shouldn't forget that)
+		b) *which* other classes are acceptable matches
+		c) whether the class to be compared must be one of the given classes, or may be a subclass
+		
+		I think this would cover all the cases we've dicussed, and be Hibernate-safe as well. The logic would be
+		
+		if (comaprableClasses != null) {
+		
+		  if (!matchSubclasses) {
+		
+		    // otherBeanClass must be one of the comparableClasses
+		
+		  } else {
+		
+		    // one of the comparable classes must be a superclass of otherBeanClass
+		
+		  }
+		
+		}
+
+2 BEANUTILS AS A FACTORY
+
+		Since the relevant business object information (which fields are annotated etc.) is *static*, there is no need to recalculate it for each object! 
+		One could either initialize BeanUtils explicitly (like JaxbContext), or BeanUtils could maintain an internal map
+		
+		Map<Class, BusinessObjectDescriptor> businessObjectDescriptors;
+		
+		with the usual cache logic:
+		
+		BusinessObjectDescriptors descriptor =
+		    businessObjectDescriptors.get(beanClass);
+		
+		if (descriptor == null) {
+		  descriptor = getBusinessObjectDescriptor(beanClass);
+		  businessObjectDescriptors.put(beanClass, descriptor); }
+		
+		This doesn't even need to be thread-safe, since in the worst case the descriptor will simply be calculated more than once.
+		
+		The descriptors would look like:
+		
+		class BusinessObjectDescriptor {
+		  Class businessObjectClass;
+		  Class comparableClasses;
+		  boolean matchSubclasses;
+		
+		  // String, not Field because it's quicker to compare Strings
+		  Map<String, BusinessFieldDescriptor> businessFields;
+		
+		  // convenience variable
+		  boolean classDependentComparison = (comparableClasses != null); }
+		
+		class BusinessFieldDescriptor {
+		  Class declaringClass; // necessary?
+		  String businessFieldName;
+		  Field businessField;
+		  
+		  // convenience variables
+		  boolean relevantForEquals;
+		  boolean relevantForHashCode;
+		  boolean relevantForToString;
+		}
