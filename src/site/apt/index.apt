@@ -1,19 +1,20 @@
 	---------------------------
-	TomTom Commons BeanUtils
+	SimpleStuff
 	---------------------------
 	Vincenzo Vitale
+	Andrew Phillips
 	---------------------------
 
 
-BeanUtils (TomTom Commons)
+SimpleBean
 
- BeanUtils is a package included in TomTom Commons, you can find it in the latest available snapshot.
+ SimpleBean is a package included in SimpleStuff.
 
  This utility is intended to prevent developers having to write (and maintain) code usually written when working with classical POJO beans. It uses annotation to explicitly declare a @BusinessField in a @BusinessObject annotated class.
 
  It was initially created to easily implement the equals(Object obj), hashCode() and toString() methods; when using Hibernate these methods can be defined if the persistence framework needs to be aware of the business relevant fields to perform better comparisons. In this scenario, when a "business field" is added, maintenance of equals and hashCode is often error-prone. With Hibernate, for example, you may end up working not with bean objects but CGLIB proxies, and in this case you must use getters when doing comparisons to avoid obtaining null values instead of the intended data.
 
- With BeanUtils you write:
+ With SimpleBean you write:
 
 ------------------------------
    @BusinessObject
@@ -78,7 +79,9 @@ BeanUtils (TomTom Commons)
    ParentClass testBean = BeanUtils.getTestBean(ParentClass.class, "test");
 -----------
 
-  To use the utility simply add the tomtom-commons-bean-utils jar to your project dependencies.
+	
+  TO BE UPDATED
+  To use the utility simply add the sinple stuff jar to your project dependencies.
 
   For Maven, add this to your pom.xml file:
 
