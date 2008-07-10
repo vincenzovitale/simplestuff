@@ -35,13 +35,11 @@ import com.google.code.simplestuff.annotation.BusinessObject;
  * 
  * Simple utility class for Java bean enhancement.
  * 
- * @author Vincenzo Vitale (vincenzo.vitale)
+ * @author Vincenzo Vitale
+ * @author Andrew Phillips
  * @since Jul 08, 2008
  * 
  */
-// TODO: Class is too big, should be broken up into functional parts. For
-// example, getting BusinessObjectDescriptor and actually processing it (during
-// equals, hashCode etc.) doesn't need to be in the same class.
 public class SimpleBean {
 
     /** Logger for this class */
@@ -56,8 +54,6 @@ public class SimpleBean {
      * @return The equals result.
      * @throws IllegalArgumentException If one of the beans compared is not an
      *         instance of a {@link BusinessObject} annotated class.
-     * @deprecated To be fixed after the code review... If you are seeing this
-     *             please use another version.
      */
     public static boolean equals(Object firstBean, Object secondBean) {
 
@@ -72,9 +68,11 @@ public class SimpleBean {
         }
 
         final BusinessObjectDescriptor firstBusinessObjectInfo =
-                getBusinessObjectInfo(firstBean.getClass());
+                BusinessObjectContext.getBusinessObjectDescriptor(firstBean
+                        .getClass());
         final BusinessObjectDescriptor secondBusinessObjectInfo =
-                getBusinessObjectInfo(secondBean.getClass());
+                BusinessObjectContext.getBusinessObjectDescriptor(secondBean
+                        .getClass());
 
         if ((firstBusinessObjectInfo == null)
                 || (secondBusinessObjectInfo == null)) {
@@ -82,6 +80,7 @@ public class SimpleBean {
                     "One or both of the beans to compare are not annotated in their hierarchy as Business Object!!!");
         }
 
+        // TODO: Revise this code in order to make it more readable...
         // If one of the two bean has the class with Business relevance then
         // we need to compare the lowest hierarchical annotated classes of
         // the two beans.
@@ -266,6 +265,7 @@ public class SimpleBean {
     }
 
     /**
+     * 
      * Returns the hashCode basing considering only the {@link BusinessField}
      * annotated fields.
      * 
@@ -280,14 +280,16 @@ public class SimpleBean {
         }
 
         BusinessObjectDescriptor businessObjectInfo =
-                getBusinessObjectInfo(bean.getClass());
+                BusinessObjectContext.getBusinessObjectDescriptor(bean
+                        .getClass());
 
         if (businessObjectInfo == null) {
             throw new IllegalArgumentException(
                     "The bean passed is not annotated in the hierarchy as Business Object!!!");
         }
 
-        Collection<Field> annotatedField = getAnnotatedFields(bean.getClass());
+        Collection<Field> annotatedField =
+                businessObjectInfo.getAnnotatedFields();
 
         HashCodeBuilder builder = new HashCodeBuilder();
         for (Field field : annotatedField) {
@@ -341,6 +343,7 @@ public class SimpleBean {
     }
 
     /**
+     * 
      * Returns the description of a bean considering only the
      * {@link BusinessField} annotated fields.
      * 
@@ -355,14 +358,16 @@ public class SimpleBean {
         }
 
         BusinessObjectDescriptor businessObjectInfo =
-                getBusinessObjectInfo(bean.getClass());
+                BusinessObjectContext.getBusinessObjectDescriptor(bean
+                        .getClass());
 
         if (businessObjectInfo == null) {
             throw new IllegalArgumentException(
                     "The bean passed is not annotated in the hierarchy as Business Object!!!");
         }
 
-        Collection<Field> annotatedField = getAnnotatedFields(bean.getClass());
+        Collection<Field> annotatedField =
+                businessObjectInfo.getAnnotatedFields();
         ToStringBuilder builder =
                 new ToStringBuilder(bean, ToStringStyle.MULTI_LINE_STYLE);
         for (Field field : annotatedField) {
@@ -446,11 +451,12 @@ public class SimpleBean {
         }
 
         BusinessObjectDescriptor businessObjectInfo =
-                getBusinessObjectInfo(beanClass);
+                BusinessObjectContext.getBusinessObjectDescriptor(beanClass);
 
         if (businessObjectInfo != null) {
 
-            Collection<Field> annotatedField = getAnnotatedFields(beanClass);
+            Collection<Field> annotatedField =
+                    businessObjectInfo.getAnnotatedFields();
             for (Field field : annotatedField) {
                 final BusinessField fieldAnnotation =
                         field.getAnnotation(BusinessField.class);
@@ -513,88 +519,5 @@ public class SimpleBean {
         }
 
         return testBean;
-    }
-
-    /**
-     * Retrieve a {@link BusinessObjectDescriptor} object for a
-     * {@link BusinessObject} class bean.
-     * 
-     * @param objectClass The class of the bean to check.
-     * @return A {@link BusinessObjectDescriptor} for the bean class passed or
-     *         null if the bean class is not a {@link BusinessObject} according
-     *         to its hierarchy.
-     */
-    private static BusinessObjectDescriptor getBusinessObjectInfo(
-            Class<? extends Object> objectClass) {
-        return getBusinessObjectInfo(objectClass, objectClass);
-    }
-
-    /**
-     * Retrieve a {@link BusinessObjectDescriptor} object for a
-     * {@link BusinessObject} class bean.
-     * 
-     * @param objectClass The class of the bean to check.
-     * @param annotationObjectClass The class to use for retrieving the
-     *        {@link BusinessField} annotated field.
-     * @return A {@link BusinessObjectDescriptor} for the bean class passed or
-     *         null if the bean class is not a {@link BusinessObject} according
-     *         to its hierarchy.
-     */
-    private static BusinessObjectDescriptor getBusinessObjectInfo(
-            Class<? extends Object> objectClass,
-            Class<? extends Object> annotationObjectClass) {
-        if (objectClass == null) {
-            return null;
-        } else {
-            if (objectClass.isAnnotationPresent(BusinessObject.class)) {
-                BusinessObjectDescriptor businessObjectInfo =
-                        new BusinessObjectDescriptor();
-                businessObjectInfo
-                        .setAnnotatedFields(getAnnotatedFields(annotationObjectClass));
-                businessObjectInfo
-                        .setClassToBeConsideredInComparison(objectClass
-                                .getAnnotation(BusinessObject.class)
-                                .includeClassAsBusinessField());
-                businessObjectInfo.setNearestBusinessObjectClass(objectClass);
-                return businessObjectInfo;
-            } else {
-                return getBusinessObjectInfo(objectClass.getSuperclass(),
-                        annotationObjectClass);
-            }
-
-        }
-    }
-
-    /**
-     * Returns an array of all fields used by this object from it's class and
-     * all super classes.
-     * 
-     * @author Andrew Phillips (anph)
-     * @param objectClass the class
-     * @param fields the current field list
-     * @return an array of fields
-     * 
-     */
-    private static Collection<Field> getAnnotatedFields(Class objectClass) {
-        final List<Field> businessFields = new ArrayList<Field>();
-
-        ReflectionUtils.doWithFields(objectClass, new FieldCallback() {
-
-            // simply add each found field to the list
-            public void doWith(Field field) throws IllegalArgumentException,
-                    IllegalAccessException {
-                businessFields.add(field);
-            }
-
-        }, new FieldFilter() {
-
-            // match fields with the "@BusinessField" annotation
-            public boolean matches(Field field) {
-                return (field.getAnnotation(BusinessField.class) != null);
-            }
-
-        });
-
-        return businessFields;
     }
 }
