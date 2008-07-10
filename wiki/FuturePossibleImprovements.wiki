@@ -43,7 +43,7 @@ Here a list of future improvements to be implemented.
 		
 		}
 
-2 BEANUTILS AS A FACTORY
+2 BUSINESS OBJECT CONTEXT (DONE)
 
 		Since the relevant business object information (which fields are annotated etc.) is *static*, there is no need to recalculate it for each object! 
 		One could either initialize BeanUtils explicitly (like JaxbContext), or BeanUtils could maintain an internal map
