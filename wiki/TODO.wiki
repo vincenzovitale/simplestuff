@@ -1,0 +1,4 @@
+#summary TODO
+
+- Release in Maven Central Repository
+- Review the license
