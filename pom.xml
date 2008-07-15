@@ -8,6 +8,8 @@
 	<url>http://code.google.com/p/simplestuff/</url>
 	<scm>
 		<url>scm:svn:http://simplestuff.googlecode.com/svn/trunk/</url>
+		<connection>scm:svn:http://simplestuff.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://simplestuff.googlecode.com/svn/trunk/</developerConnection>
 	</scm>
 	<description> TO BE CHANGED Bean utils related classes written by
 		TomTom and usable in multiple projects. A tool used to enhance
