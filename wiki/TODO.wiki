@@ -1,5 +1,0 @@
-#summary TODO
-
-|| *What* || *Why* || *When* || *Who* ||
-|| Release in Maven Central Repository || Availability with Maven || 20\07\2008 || Vicio ||
-|| Review the license|| I'm not an expert and I chose the most known|| 15\07\2008 || Vicio ||
