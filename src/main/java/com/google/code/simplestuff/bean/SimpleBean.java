@@ -143,29 +143,29 @@ public class SimpleBean {
                     // Fields), then we return false.
                 } catch (IllegalAccessException e) {
                     if (log.isDebugEnabled()) {
-                        log
-                                .debug(
-                                        "IllegalAccessException exception when comparing "
-                                                + firstBean + " with  "
-                                                + secondBean, e);
+                        log.debug(
+                                "IllegalAccessException exception when comparing class "
+                                        + firstBean.getClass().toString()
+                                        + " with class"
+                                        + secondBean.getClass().toString(), e);
                     }
                     return false;
                 } catch (InvocationTargetException e) {
                     if (log.isDebugEnabled()) {
-                        log
-                                .debug(
-                                        "InvocationTargetException exception when comparing "
-                                                + firstBean + " with  "
-                                                + secondBean, e);
+                        log.debug(
+                                "InvocationTargetException exceptionwhen comparing class "
+                                        + firstBean.getClass().toString()
+                                        + " with class"
+                                        + secondBean.getClass().toString(), e);
                     }
                     return false;
                 } catch (NoSuchMethodException e) {
                     if (log.isDebugEnabled()) {
-                        log
-                                .debug(
-                                        "NoSuchMethodException exception when comparing "
-                                                + firstBean + " with  "
-                                                + secondBean, e);
+                        log.debug(
+                                "NoSuchMethodException exception when comparing class "
+                                        + firstBean.getClass().toString()
+                                        + " with class"
+                                        + secondBean.getClass().toString(), e);
                     }
                     return false;
                 }
@@ -323,21 +323,21 @@ public class SimpleBean {
                     }
                 } catch (IllegalAccessException e) {
                     if (log.isDebugEnabled()) {
-                        log.info(
-                                "IllegalAccessException exception when calculating the hashcode of "
-                                        + bean, e);
+                        log.debug(
+                                "IllegalAccessException exception when calculating the hashcode of class"
+                                        + bean.getClass().toString(), e);
                     }
                 } catch (InvocationTargetException e) {
                     if (log.isDebugEnabled()) {
                         log.debug(
-                                "InvocationTargetException exception when calculating the hashcode of "
-                                        + bean, e);
+                                "InvocationTargetException exception when calculating the hashcode of class"
+                                        + bean.getClass().toString(), e);
                     }
                 } catch (NoSuchMethodException e) {
                     if (log.isDebugEnabled()) {
                         log.debug(
-                                "NoSuchMethodException exception when calculating the hashcode of "
-                                        + bean, e);
+                                "NoSuchMethodException exception when calculating the hashcode of class"
+                                        + bean.getClass().toString(), e);
                     }
                 }
             }
@@ -402,22 +402,22 @@ public class SimpleBean {
                     if (log.isDebugEnabled()) {
                         log
                                 .debug(
-                                        "IllegalAccessException exception when calculating the string representation of "
-                                                + bean, e);
+                                        "IllegalAccessException exception when calculating the string representation of class"
+                                                + bean.getClass().toString(), e);
                     }
                 } catch (InvocationTargetException e) {
                     if (log.isDebugEnabled()) {
                         log
                                 .debug(
-                                        "InvocationTargetException exception when calculating the string representation of "
-                                                + bean, e);
+                                        "InvocationTargetException exception when calculating the string representation of class"
+                                                + bean.getClass().toString(), e);
                     }
                 } catch (NoSuchMethodException e) {
                     if (log.isDebugEnabled()) {
                         log
                                 .debug(
-                                        "NoSuchMethodException exception when calculating the string representation of "
-                                                + bean, e);
+                                        "NoSuchMethodException exception when calculating the string representation of a bean of class"
+                                                + bean.getClass().toString(), e);
                     }
                 }
             }
@@ -437,7 +437,6 @@ public class SimpleBean {
      * @param suffix The suffix to append in the string field.
      * @return The bean with test values.
      */
-    @SuppressWarnings("unchecked")
     public static <T> T getTestBean(Class<T> beanClass, String suffix) {
         if (beanClass == null) {
             throw new IllegalArgumentException(

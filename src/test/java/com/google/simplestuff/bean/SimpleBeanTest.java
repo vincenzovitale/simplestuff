@@ -16,6 +16,10 @@
  */
 package com.google.simplestuff.bean;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,12 +27,15 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.lang.SerializationUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.internal.runners.JUnit4ClassRunner;
+import org.junit.runner.RunWith;
 
 import com.google.code.simplestuff.annotation.BusinessField;
 import com.google.code.simplestuff.annotation.BusinessObject;
+import com.google.code.simplestuff.bean.AbstractBusinessObject;
 import com.google.code.simplestuff.bean.SimpleBean;
 
 /**
@@ -43,15 +50,20 @@ import com.google.code.simplestuff.bean.SimpleBean;
  * 
  */
 @SuppressWarnings("serial")
-public class SimpleBeanTest extends TestCase implements Serializable {
+@RunWith(JUnit4ClassRunner.class)
+public class SimpleBeanTest implements Serializable {
 
-    ParentClass testObjectOne;
+    static ParentClass testObjectOne;
 
-    ParentClass testObjectTwo;
+    static ParentClass testObjectTwo;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    // @BeforeClass
+    // public static void beforeClass(){
+    // LogFactory.getLog(SimpleBean.class).
+    // }
+    
+    @Before
+    public void setUp() throws Exception {
 
         testObjectOne = new ParentClass();
         testObjectOne.setBooleanField(true);
@@ -74,8 +86,10 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * {@link com.tomtom.commons.bean.SimpleBean#equals(java.lang.Object, java.lang.Object)}
      * .
      */
+    @Test
     public void testEquals() {
         assertTrue(testObjectOne.equals(testObjectTwo));
+
     }
 
     /**
@@ -83,6 +97,7 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * {@link com.tomtom.commons.bean.SimpleBean#equals(java.lang.Object, java.lang.Object)}
      * .
      */
+    @Test
     public void testEqualsBetweenAppleAndTable() {
         assertTrue((new Apple()).equals(new Table()));
     }
@@ -92,6 +107,7 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * {@link com.tomtom.commons.bean.SimpleBean#equals(java.lang.Object, java.lang.Object)}
      * .
      */
+    @Test
     public void testNotEqualsBetweenAppleAndChair() {
         assertFalse((new Apple()).equals(new Chair()));
     }
@@ -101,6 +117,7 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * {@link com.tomtom.commons.bean.SimpleBean#equals(java.lang.Object, java.lang.Object)}
      * .
      */
+    @Test
     public void testNotEqualsBetweenTableAndChair() {
         assertFalse((new Table()).equals(new Chair()));
     }
@@ -109,6 +126,7 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * Test method for
      * {@link com.tomtom.commons.bean.SimpleBean#hashCode(java.lang.Object)}.
      */
+    @Test
     public void testHashCode() {
         assertEquals(testObjectOne.hashCode(), testObjectTwo.hashCode());
     }
@@ -117,10 +135,23 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * Test method for
      * {@link com.tomtom.commons.bean.SimpleBean#toString(java.lang.Object)}.
      */
+    @Test
     public void testToString() {
         assertEquals(replacePattern(testObjectOne.toString(),
                 "@\\p{Alnum}+\\[", "["), replacePattern(testObjectTwo
                 .toString(), "@\\p{Alnum}+\\[", "["));
+    }
+
+    /**
+     * Test that the StackOverflow error is fixed when a proper getter is not
+     * defined.
+     */
+    @Test
+    public void testStackOverflowProblemFixed() {
+        NoSuchMethodExceptionBean firstBean = new NoSuchMethodExceptionBean();
+
+        firstBean.toString();
+
     }
 
     /**
@@ -148,6 +179,7 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * Test method for
      * {@link com.tomtom.commons.bean.SimpleBean#TestBean(Class)}.
      */
+    @Test
     public void testGetTestBean() {
         ParentClass testBean = SimpleBean.getTestBean(ParentClass.class, null);
         assertEquals(true, testBean.isBooleanPrimitiveField());
@@ -174,9 +206,8 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * @since Apr 26, 2007
      * 
      */
-    @SuppressWarnings("serial")
-    @BusinessObject
-    public static class ParentClass implements Serializable {
+    public static class ParentClass extends AbstractBusinessObject implements
+            Serializable {
 
         @BusinessField
         Boolean booleanField;
@@ -225,21 +256,6 @@ public class SimpleBeanTest extends TestCase implements Serializable {
 
         @BusinessField
         Set<ChildClass> childs;
-
-        @Override
-        public boolean equals(Object obj) {
-            return SimpleBean.equals(this, obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return SimpleBean.hashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return SimpleBean.toString(this);
-        }
 
         public Boolean getBooleanField() {
             return booleanField;
@@ -378,29 +394,13 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * @since Apr 26, 2007
      * 
      */
-    @SuppressWarnings("serial")
-    @BusinessObject
-    public static class ChildClass implements Serializable {
+    public static class ChildClass extends AbstractBusinessObject implements
+            Serializable {
 
         @BusinessField
         String stringField;
 
         ParentClass parent;
-
-        @Override
-        public boolean equals(Object obj) {
-            return SimpleBean.equals(this, obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return SimpleBean.hashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return SimpleBean.toString(this);
-        }
 
         public ParentClass getParent() {
             return parent;
@@ -438,27 +438,12 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * @since Apr 26, 2007
      * 
      */
-    @SuppressWarnings("serial")
     @BusinessObject(includeClassAsBusinessField = false)
-    public static class Apple implements Serializable {
+    public static class Apple extends AbstractBusinessObject implements
+            Serializable {
         @BusinessField
         String color = "red";
 
-        @Override
-        public boolean equals(Object obj) {
-            return SimpleBean.equals(this, obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return SimpleBean.hashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return SimpleBean.toString(this);
-        }
-
         /**
          * @return the color
          */
@@ -483,26 +468,11 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * @since Apr 26, 2007
      * 
      */
-    @SuppressWarnings("serial")
     @BusinessObject(includeClassAsBusinessField = false)
-    public static class Table implements Serializable {
+    public static class Table extends AbstractBusinessObject implements
+            Serializable {
         @BusinessField
         private String color = "red";
-
-        @Override
-        public boolean equals(Object obj) {
-            return SimpleBean.equals(this, obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return SimpleBean.hashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return SimpleBean.toString(this);
-        }
 
         /**
          * @return the color
@@ -528,26 +498,11 @@ public class SimpleBeanTest extends TestCase implements Serializable {
      * @since Apr 26, 2007
      * 
      */
-    @SuppressWarnings("serial")
     @BusinessObject(includeClassAsBusinessField = true)
-    public static class Chair implements Serializable {
+    public static class Chair extends AbstractBusinessObject implements
+            Serializable {
         @BusinessField
         private String color = "red";
-
-        @Override
-        public boolean equals(Object obj) {
-            return SimpleBean.equals(this, obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return SimpleBean.hashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return SimpleBean.toString(this);
-        }
 
         /**
          * @return the color
@@ -562,7 +517,36 @@ public class SimpleBeanTest extends TestCase implements Serializable {
         public void setColor(String color) {
             this.color = color;
         }
+    }
 
+    /**
+     * This bena should generate a {@link NoSuchMethodException} in ternally in
+     * Simplestuff. There was a bug in the toString method when this was
+     * happening generating a {@link StackOverflowError}. This test tests it was
+     * fixed.
+     * 
+     * @author Vincenzo Vitale (vita)
+     * @since Apr 26, 2007
+     * 
+     */
+    public static class NoSuchMethodExceptionBean extends
+            AbstractBusinessObject implements Serializable {
+        @BusinessField
+        private String color = "red";
+
+        /**
+         * @return the color
+         */
+        public String getColorWrongGetter() {
+            return color;
+        }
+
+        /**
+         * @param color the color to set
+         */
+        public void setColor(String color) {
+            this.color = color;
+        }
     }
 
 }
