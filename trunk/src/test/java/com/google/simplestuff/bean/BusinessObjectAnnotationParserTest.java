@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.internal.runners.JUnit4ClassRunner;
+import org.junit.runner.RunWith;
 
 import com.google.code.simplestuff.annotation.BusinessField;
 import com.google.code.simplestuff.bean.BusinessObjectAnnotationParser;
@@ -34,6 +36,7 @@ import com.google.code.simplestuff.bean.BusinessObjectAnnotationParser;
  * @since 14 Sep 2007
  * 
  */
+@RunWith(JUnit4ClassRunner.class)
 public class BusinessObjectAnnotationParserTest {
 
     @com.google.code.simplestuff.annotation.BusinessObject
