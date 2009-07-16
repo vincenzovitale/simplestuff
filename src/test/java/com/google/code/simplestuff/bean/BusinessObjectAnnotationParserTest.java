@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.simplestuff.bean;
+package com.google.code.simplestuff.bean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,6 @@ import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
 
 import com.google.code.simplestuff.annotation.BusinessField;
-import com.google.code.simplestuff.bean.BusinessObjectAnnotationParser;
 
 /**
  * A unit test for the <code>BusinessObjectAnnotationParser</code>.

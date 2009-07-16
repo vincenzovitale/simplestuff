@@ -19,9 +19,9 @@ package com.google.code.simplestuff.bean;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -45,12 +45,12 @@ import com.google.code.simplestuff.annotation.BusinessObject;
  */
 class BusinessObjectContext {
     private static final Map<Class<? extends Object>, BusinessObjectDescriptor> BUSINESS_OBJECT_DESCRIPTORS =
-            new HashMap<Class<? extends Object>, BusinessObjectDescriptor>();
+            new ConcurrentHashMap<Class<? extends Object>, BusinessObjectDescriptor>();
 
     /**
      * Private so that this class cannot be instantiated.
      */
-    public BusinessObjectContext() {
+    private BusinessObjectContext() {
         throw new AssertionError("Don't instantiate me.");
     }
 
@@ -59,11 +59,9 @@ class BusinessObjectContext {
      * {@link BusinessObject} class bean.
      * 
      * @param objectClass The class of the bean to check.
-     * @return A {@link BusinessObjectDescriptor} for the bean class passed or
-     *         null if the bean class is not a {@link BusinessObject} according
-     *         to its hierarchy.
+     * @return A {@link BusinessObjectDescriptor} for the bean class passed.
      */
-    public static BusinessObjectDescriptor getBusinessObjectDescriptor(
+    static BusinessObjectDescriptor getBusinessObjectDescriptor(
             Class<? extends Object> objectClass) {
 
         if (!BUSINESS_OBJECT_DESCRIPTORS.containsKey(objectClass)) {
@@ -81,27 +79,30 @@ class BusinessObjectContext {
      * @param objectClass The class of the bean to check.
      * @param annotationObjectClass The class to use for retrieving the
      *        {@link BusinessField} annotated field.
-     * @return A {@link BusinessObjectDescriptor} for the bean class passed or
-     *         null if the bean class is not a {@link BusinessObject} according
-     *         to its hierarchy.
+     * @return A {@link BusinessObjectDescriptor} for the bean class passed.
      */
     private static BusinessObjectDescriptor getBusinessObjectDescriptor(
             Class<? extends Object> objectClass,
             Class<? extends Object> annotationObjectClass) {
+
+        BusinessObjectDescriptor businessObjectDescriptor =
+                new BusinessObjectDescriptor();
+
         if (objectClass == null) {
-            return null;
+            businessObjectDescriptor.setNearestBusinessObjectClass(null);
+            return businessObjectDescriptor;
         } else {
             if (objectClass.isAnnotationPresent(BusinessObject.class)) {
-                BusinessObjectDescriptor businessObjectInfo =
-                        new BusinessObjectDescriptor();
-                businessObjectInfo
+
+                businessObjectDescriptor
                         .setAnnotatedFields(getAnnotatedFields(annotationObjectClass));
-                businessObjectInfo
+                businessObjectDescriptor
                         .setClassToBeConsideredInComparison(objectClass
                                 .getAnnotation(BusinessObject.class)
                                 .includeClassAsBusinessField());
-                businessObjectInfo.setNearestBusinessObjectClass(objectClass);
-                return businessObjectInfo;
+                businessObjectDescriptor
+                        .setNearestBusinessObjectClass(objectClass);
+                return businessObjectDescriptor;
             } else {
                 return getBusinessObjectDescriptor(objectClass.getSuperclass(),
                         annotationObjectClass);
