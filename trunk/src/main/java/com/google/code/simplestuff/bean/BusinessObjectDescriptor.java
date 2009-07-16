@@ -19,8 +19,10 @@ package com.google.code.simplestuff.bean;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
+import com.google.code.simplestuff.annotation.BusinessObject;
+
 /**
- * Container maintaining information on a BusinessObject
+ * Container maintaining "Business Object" information for an object.
  * 
  * @author Vincenzo Vitale (vita)
  * 
@@ -34,7 +36,8 @@ public class BusinessObjectDescriptor {
     private Boolean classToBeConsideredInComparison;
 
     /**
-     * The first annotated class in the object comparison.
+     * The first annotated class in the object comparison. If this field is
+     * <code>null</code> than the object is not a {@link BusinessObject}.
      */
     private Class<? extends Object> nearestBusinessObjectClass;
 

@@ -40,7 +40,7 @@ import com.google.code.simplestuff.annotation.BusinessField;
  * @since 6 Sep 2007
  * 
  */
-public class BusinessObjectAnnotationParser {
+class BusinessObjectAnnotationParser {
 
     /**
      * Retrieves a &quot;field-value&quot; map of all properties of the given
@@ -51,7 +51,7 @@ public class BusinessObjectAnnotationParser {
      * @param object the object whose properties should be examined
      * @return a map of all appropriately annotated fields
      */
-    public static Map<String, Object> retrieveBusinessFields(Object object) {
+    static Map<String, Object> retrieveBusinessFields(Object object) {
         Map<String, Object> businessProperties = new HashMap<String, Object>();
 
         for (Field field : collectAnnotatedFields(object.getClass())) {
@@ -71,7 +71,8 @@ public class BusinessObjectAnnotationParser {
         return businessProperties;
     }
 
-    private static Collection<Field> collectAnnotatedFields(Class clazz) {
+    static Collection<Field> collectAnnotatedFields(
+            Class<? extends Object> clazz) {
         final List<Field> businessFields = new ArrayList<Field>();
 
         ReflectionUtils.doWithFields(clazz, new FieldCallback() {

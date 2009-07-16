@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.simplestuff.bean;
+package com.google.code.simplestuff.bean;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,8 +37,6 @@ import org.junit.runner.RunWith;
 
 import com.google.code.simplestuff.annotation.BusinessField;
 import com.google.code.simplestuff.annotation.BusinessObject;
-import com.google.code.simplestuff.bean.AbstractBusinessObject;
-import com.google.code.simplestuff.bean.SimpleBean;
 
 /**
  * TestCase class that tests the {@link SimpleBean} class. This test implements
@@ -45,8 +45,7 @@ import com.google.code.simplestuff.bean.SimpleBean;
  * 
  * 
  * @author Vincenzo Vitale (vincenzo.vitale)
- * @since Jul 08, 2008 TODO: Write the tests for all the different strangest
- *        (i.e. passing not directly business object beans). TODO Use Junit 4
+ * @since Jul 08, 2008
  * 
  */
 @SuppressWarnings("serial")
@@ -57,11 +56,6 @@ public class SimpleBeanTest implements Serializable {
 
     static ParentClass testObjectTwo;
 
-    // @BeforeClass
-    // public static void beforeClass(){
-    // LogFactory.getLog(SimpleBean.class).
-    // }
-    
     @Before
     public void setUp() throws Exception {
 
@@ -152,6 +146,20 @@ public class SimpleBeanTest implements Serializable {
 
         firstBean.toString();
 
+    }
+
+    /**
+     * This test makes sure that the utility can deal without problems with
+     * normal not business objects.
+     */
+    @Test
+    public void testWithASimpleObjects() {
+        Object firstBean = SimpleBean.getTestBean(ParentClass.class, null);
+        Object secondBean = new Object();
+        List<Object> list = new ArrayList<Object>();
+
+        assertFalse(firstBean.equals(secondBean));
+        assertFalse(firstBean.equals(list));
     }
 
     /**

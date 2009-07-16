@@ -79,8 +79,10 @@ public class SimpleBean {
                 BusinessObjectContext.getBusinessObjectDescriptor(secondBean
                         .getClass());
 
-        if ((firstBusinessObjectInfo == null)
-                || (secondBusinessObjectInfo == null)) {
+        // We don't need here a not null check since by contract the
+        // getBusinessObjectDescriptor method alwasy returns an abject.
+        if ((firstBusinessObjectInfo.getNearestBusinessObjectClass() == null)
+                || (secondBusinessObjectInfo.getNearestBusinessObjectClass() == null)) {
             return false;
             // throw new IllegalArgumentException(
             // "One or both of the beans to compare are not annotated in their hierarchy as Business Object!!!");
@@ -288,9 +290,12 @@ public class SimpleBean {
                 BusinessObjectContext.getBusinessObjectDescriptor(bean
                         .getClass());
 
-        if (businessObjectInfo == null) {
-            throw new IllegalArgumentException(
-                    "The bean passed is not annotated in the hierarchy as Business Object!!!");
+        // We don't need here a not null check since by contract the
+        // getBusinessObjectDescriptor method always returns an abject.
+        if (businessObjectInfo.getNearestBusinessObjectClass() == null) {
+            return bean.hashCode();
+            // throw new IllegalArgumentException(
+            // "The bean passed is not annotated in the hierarchy as Business Object!!!");
         }
 
         Collection<Field> annotatedField =
@@ -367,8 +372,9 @@ public class SimpleBean {
                         .getClass());
 
         if (businessObjectInfo == null) {
-            throw new IllegalArgumentException(
-                    "The bean passed is not annotated in the hierarchy as Business Object!!!");
+            return bean.toString();
+            // throw new IllegalArgumentException(
+            // "The bean passed is not annotated in the hierarchy as Business Object!!!");
         }
 
         Collection<Field> annotatedField =
@@ -447,17 +453,21 @@ public class SimpleBean {
         try {
             testBean = beanClass.newInstance();
         } catch (InstantiationException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            if (log.isDebugEnabled()) {
+                log.debug(e1.getMessage());
+            }
         } catch (IllegalAccessException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            if (log.isDebugEnabled()) {
+                log.debug(e1.getMessage());
+            }
         }
 
         BusinessObjectDescriptor businessObjectInfo =
                 BusinessObjectContext.getBusinessObjectDescriptor(beanClass);
 
-        if (businessObjectInfo != null) {
+        // We don't need here a not null check since by contract the
+        // getBusinessObjectDescriptor method always returns an abject.
+        if (businessObjectInfo.getNearestBusinessObjectClass() != null) {
 
             Collection<Field> annotatedField =
                     businessObjectInfo.getAnnotatedFields();
@@ -509,14 +519,17 @@ public class SimpleBean {
                         }
 
                     } catch (IllegalAccessException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        if (log.isDebugEnabled()) {
+                            log.debug(e.getMessage());
+                        }
                     } catch (InvocationTargetException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        if (log.isDebugEnabled()) {
+                            log.debug(e.getMessage());
+                        }
                     } catch (NoSuchMethodException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        if (log.isDebugEnabled()) {
+                            log.debug(e.getMessage());
+                        }
                     }
                 }
             }
