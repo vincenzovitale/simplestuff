@@ -319,7 +319,7 @@ public class SimpleBean {
                                         .getProperty(bean, field.getName());
                         if (fieldValue != null) {
                             builder.append(DateUtils.round(fieldValue,
-                                    Calendar.SECOND));
+                                    Calendar.MILLISECOND));
                         }
 
                     } else {
