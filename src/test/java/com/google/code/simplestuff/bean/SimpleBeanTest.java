@@ -52,9 +52,9 @@ import com.google.code.simplestuff.annotation.BusinessObject;
 @RunWith(JUnit4ClassRunner.class)
 public class SimpleBeanTest implements Serializable {
 
-    static ParentClass testObjectOne;
+    private static ParentClass testObjectOne;
 
-    static ParentClass testObjectTwo;
+    private static ParentClass testObjectTwo;
 
     @Before
     public void setUp() throws Exception {
@@ -153,13 +153,39 @@ public class SimpleBeanTest implements Serializable {
      * normal not business objects.
      */
     @Test
-    public void testWithASimpleObjects() {
+    public void testWithBusinessObjectAndNoBusinessObjects() {
         Object firstBean = SimpleBean.getTestBean(ParentClass.class, null);
         Object secondBean = new Object();
         List<Object> list = new ArrayList<Object>();
 
         assertFalse(firstBean.equals(secondBean));
+
         assertFalse(firstBean.equals(list));
+
+    }
+
+    /**
+     * This test makes sure that the utility can deal without problems with
+     * normal not business objects.
+     */
+    @Test
+    public void testWithNoBusinessObjects() {
+        NoBusinessObjectOne noBusinessObjectOne = new NoBusinessObjectOne();
+        NoBusinessObjectOneExtended noBusinessObjectOneExtended =
+                new NoBusinessObjectOneExtended();
+
+        NoBusinessObjectTwo noBusinessObjectTwo = new NoBusinessObjectTwo();
+
+        assertFalse(noBusinessObjectOne.equals(null));
+
+        assertTrue(noBusinessObjectOne.equals(noBusinessObjectOneExtended));
+        assertTrue(noBusinessObjectOneExtended.equals(noBusinessObjectOne));
+        assertTrue(noBusinessObjectOne.equals(noBusinessObjectOneExtended));
+
+        assertFalse(noBusinessObjectTwo.equals(noBusinessObjectOne));
+        assertFalse(noBusinessObjectTwo.equals(noBusinessObjectOneExtended));
+        assertFalse(noBusinessObjectOne.equals(noBusinessObjectTwo));
+        assertFalse(noBusinessObjectOneExtended.equals(noBusinessObjectTwo));
     }
 
     /**
@@ -554,6 +580,128 @@ public class SimpleBeanTest implements Serializable {
          */
         public void setColor(String color) {
             this.color = color;
+        }
+    }
+
+    /**
+     * A generic class not annotated as a Business Object.
+     * 
+     * @author Vincenzo Vitale (vita)
+     * @since Jul 22, 2009
+     * 
+     */
+    public static class NoBusinessObjectOne implements Serializable {
+
+        private String myString = "vicio";
+
+        /**
+         * @return the myString
+         */
+        public String getMyString() {
+            return myString;
+        }
+
+        /**
+         * @param myString the myString to set
+         */
+        public void setMyString(String myString) {
+            this.myString = myString;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return SimpleBean.equals(this, other);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+            return SimpleBean.hashCode(this);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return SimpleBean.toString(this);
+        }
+    }
+
+    /**
+     * An extension of the {@link NoBusinessObjectOne} class.
+     * 
+     * @author Vincenzo Vitale (vita)
+     * @since Jul 22, 2009
+     * 
+     */
+    public static class NoBusinessObjectOneExtended extends NoBusinessObjectOne
+            implements Serializable {
+
+        @Override
+        public boolean equals(Object other) {
+            return SimpleBean.equals(this, other);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+            return SimpleBean.hashCode(this);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return SimpleBean.toString(this);
+        }
+    }
+
+    /**
+     * A generic class not annotated as a Business Object.
+     * 
+     * @author Vincenzo Vitale (vita)
+     * @since Jul 22, 2009
+     * 
+     */
+    public static class NoBusinessObjectTwo implements Serializable {
+
+        @Override
+        public boolean equals(Object other) {
+            return SimpleBean.equals(this, other);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+            return SimpleBean.hashCode(this);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return SimpleBean.toString(this);
         }
     }
 

@@ -58,10 +58,6 @@
         <junit.version>4.4</junit.version>
         <easymock.version>2.3</easymock.version>
         <spring.version>2.5.2</spring.version>
-        <jboss-common-jdbc-wrapper.version> 4.0.4 
-		</jboss-common-jdbc-wrapper.version>
-        <jbossall-client>4.0.4</jbossall-client>
-        <jboss.version>4.0.4</jboss.version>
         <commons-beanutils.version>1.7.0</commons-beanutils.version>
         <commons-lang.version>2.1</commons-lang.version>
         <commons-logging.version>1.0.4</commons-logging.version>
