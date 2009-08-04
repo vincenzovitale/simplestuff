@@ -80,12 +80,25 @@ public class SimpleBean {
                         .getClass());
 
         // We don't need here a not null check since by contract the
-        // getBusinessObjectDescriptor method alwasy returns an abject.
-        if ((firstBusinessObjectInfo.getNearestBusinessObjectClass() == null)
-                || (secondBusinessObjectInfo.getNearestBusinessObjectClass() == null)) {
-            return false;
-            // throw new IllegalArgumentException(
-            // "One or both of the beans to compare are not annotated in their hierarchy as Business Object!!!");
+        // getBusinessObjectDescriptor method always returns an abject.
+        
+        // All this conditions are to support the case in which
+        // SimpleBean.equals is used in not Business Object. Than the rules are:
+        // !BO.equals(!BO) = The objects are equals if one of them is assignable
+        // to the other (the or is used for the respect the symmetric rule)
+        // !BO.eqauls(BO) = The equals of the !BO is used.
+        // BO.equals(!BO) = The equals of the !BO is used.
+        if (firstBusinessObjectInfo.getNearestBusinessObjectClass() == null) {
+            if (secondBusinessObjectInfo.getNearestBusinessObjectClass() == null) {
+                return firstBean.getClass().isAssignableFrom(
+                        secondBean.getClass())
+                        || secondBean.getClass().isAssignableFrom(
+                                firstBean.getClass());
+            } else {
+                return firstBean.equals(secondBean);
+            }
+        } else if (secondBusinessObjectInfo.getNearestBusinessObjectClass() == null) {
+            return secondBean.equals(firstBean);
         }
 
         // TODO: Revise this code in order to make it more readable...
