@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>simplestuff</artifactId>
 	<groupId>com.google.code.simplestuff</groupId>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9</version>
 	<name>Simple Stuff Project</name>
 	<url>http://code.google.com/p/simplestuff/</url>
 	<scm>
