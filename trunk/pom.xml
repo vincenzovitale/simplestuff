@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>simplestuff</artifactId>
 	<groupId>com.google.code.simplestuff</groupId>
-	<version>0.10-SNAPSHOT</version>
+	<version>0.9-SNAPSHOT</version>
 	<name>Simple Stuff Project</name>
 	<url>http://code.google.com/p/simplestuff/</url>
 	<scm>
@@ -28,7 +28,7 @@
 			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<snapshotRepository>
-			<id>your-id-snapshots</id>
+			<id>simplestuff-snapshot</id>
 			<name>Your Snapshot Repository</name>
 			<url>http://oss.sonatype.org/content/repositories/simplestuff/</url>
 		</snapshotRepository>
