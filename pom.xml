@@ -1,15 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>simplestuff</artifactId>
 	<groupId>com.google.code.simplestuff</groupId>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9</version>
 	<name>Simple Stuff Project</name>
 	<url>http://code.google.com/p/simplestuff/</url>
 	<scm>
-		<url>scm:svn:http://simplestuff.googlecode.com/svn/tags/simplestuff-0.9</url>
-		<connection>scm:svn:http://simplestuff.googlecode.com/svn/tags/simplestuff-0.9</connection>
-		<developerConnection>scm:svn:https://simplestuff.googlecode.com/svn/tags/simplestuff-0.9</developerConnection>
+		<url>scm:svn:vn:http://simplestuff.googlecode.com/svn/tags/simplestuff-0.9</url>
+		<connection>scm:svn:vn:http://simplestuff.googlecode.com/svn/tags/simplestuff-0.9</connection>
+		<developerConnection>scm:svn:vn:http://simplestuff.googlecode.com/svn/tags/simplestuff-0.9</developerConnection>
 	</scm>
 	<description>A tool used to enhance
 		classical pojo bean for quickly doing common things (equals
