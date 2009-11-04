@@ -7,9 +7,9 @@
 	<name>Simple Stuff Project</name>
 	<url>http://code.google.com/p/simplestuff/</url>
 	<scm>
-		<url>scm:svn://simplestuff.googlecode.com/svn/trunk</url>
-		<connection>scm:svn://simplestuff.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn://simplestuff.googlecode.com/svn/trunk</developerConnection>
+		<url>scm:svn:svn://simplestuff.googlecode.com/svn/trunk</url>
+		<connection>scm:svn:svn://simplestuff.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:svn://simplestuff.googlecode.com/svn/trunk</developerConnection>
 	</scm>
 	<description>A tool used to enhance
 		classical pojo bean for quickly doing common things (equals
