@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 
 import com.google.code.simplestuff.annotation.BusinessField;
 import com.google.code.simplestuff.annotation.BusinessObject;
+import com.google.code.simplestuff.bean.SimpleBeanTest.ParentClass.ParentEnum;
 
 /**
  * TestCase class that tests the {@link SimpleBean} class. This test implements
@@ -72,6 +73,11 @@ public class SimpleBeanTest implements Serializable {
         testObjectOne.getChilds().add(
                 new ChildClass("Child Two String field", testObjectOne));
 
+		ArrayList<ParentEnum> enums = new ArrayList<ParentEnum>();
+		enums.add(ParentEnum.ONE);
+		enums.add(ParentEnum.THREE);
+ testObjectOne.setEnums(enums);
+        
         testObjectTwo = (ParentClass) SerializationUtils.clone(testObjectOne);
     }
 
@@ -243,6 +249,13 @@ public class SimpleBeanTest implements Serializable {
     public static class ParentClass extends AbstractBusinessObject implements
             Serializable {
 
+    	public enum ParentEnum{
+    		
+    		ONE,
+    		TWO,
+    		THREE;
+    	}
+    	
         @BusinessField
         Boolean booleanField;
 
@@ -290,8 +303,25 @@ public class SimpleBeanTest implements Serializable {
 
         @BusinessField
         Set<ChildClass> childs;
+        
+        @BusinessField
+        List<ParentEnum> enums;
 
-        public Boolean getBooleanField() {
+        /**
+		 * @return the enums
+		 */
+		public List<ParentEnum> getEnums() {
+			return enums;
+		}
+
+		/**
+		 * @param enums the enums to set
+		 */
+		public void setEnums(List<ParentEnum> enums) {
+			this.enums = enums;
+		}
+
+		public Boolean getBooleanField() {
             return booleanField;
         }
 
